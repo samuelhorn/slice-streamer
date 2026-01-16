@@ -36,6 +36,9 @@ function SectionBuilder() {
     "A split layout with an image and a call to action",
     "A demo request form with social proof logos",
     "A section for filtering cars, including selects, tags and buttons",
+    "A 3 column carousel of testimonials with star ratings and avatars",
+    "A form with inputs, selects and checkboxes",
+    "A full width header with logo and navigation links left, call to actions right, and a breadcrumb beneath",
   ];
 
   const hasElements = tree && Object.keys(tree.elements).length > 0;

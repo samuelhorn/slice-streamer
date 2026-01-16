@@ -185,6 +185,47 @@ export const sectionCatalog = createCatalog({
       description: "Shadcn select dropdown",
     },
 
+    Checkbox: {
+      props: z.object({
+        label: z.string().nullable(),
+        checked: z.boolean().nullable(),
+        disabled: z.boolean().nullable(),
+      }),
+      description: "Shadcn checkbox with optional label",
+    },
+
+    Breadcrumb: {
+      props: z.object({
+        items: z
+          .array(
+            z.object({
+              label: z.string(),
+              href: z.string().nullable(),
+              current: z.boolean().nullable(),
+            })
+          )
+          .nullable(),
+      }),
+      description: "Shadcn breadcrumb navigation",
+    },
+
+    Carousel: {
+      props: z.object({
+        items: z
+          .array(
+            z.object({
+              content: z.string().nullable(),
+              contentKey: z.string().nullable(),
+            })
+          )
+          .nullable(),
+        orientation: z.enum(["horizontal", "vertical"]).nullable(),
+        loop: z.boolean().nullable(),
+        showControls: z.boolean().nullable(),
+      }),
+      description: "Shadcn carousel for sliding content",
+    },
+
     // Structural
     Card: {
       props: z.object({
