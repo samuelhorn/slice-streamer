@@ -1,6 +1,7 @@
 "use client";
 
 import { type ComponentRenderProps } from "@json-render/react";
+import type { ElementType } from "react";
 
 export function Heading({ element }: ComponentRenderProps) {
   const { level, text, size, weight, align } = element.props as {
@@ -12,7 +13,7 @@ export function Heading({ element }: ComponentRenderProps) {
   };
 
   const levelValue = level && level >= 1 && level <= 6 ? level : 2;
-  const Tag = `h${levelValue}` as keyof JSX.IntrinsicElements;
+  const Tag = `h${levelValue}` as ElementType;
 
   const sizeMap: Record<string, string> = {
     sm: "18px",

@@ -31,6 +31,15 @@ export function Text({ element }: ComponentRenderProps) {
     accent: "var(--primary)",
   };
 
+  const alignMap: Record<string, "left" | "center" | "right" | "justify"> = {
+    left: "left",
+    center: "center",
+    right: "right",
+    justify: "justify",
+  };
+
+  const textAlign = (align && alignMap[align]) || "left";
+
   return (
     <p
       style={{
@@ -38,7 +47,7 @@ export function Text({ element }: ComponentRenderProps) {
         fontSize: sizeMap[size || "base"],
         fontWeight: weightMap[weight || "normal"],
         color: colorMap[color || "default"],
-        textAlign: align || "left",
+        textAlign,
         lineHeight: 1.6,
       }}
     >

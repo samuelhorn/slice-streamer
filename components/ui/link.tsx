@@ -9,7 +9,17 @@ export function Link({ element }: ComponentRenderProps) {
     variant?: string | null;
   };
 
-  const variantMap = {
+  const variantMap: Record<
+    string,
+    {
+      color?: string;
+      textDecoration?: string;
+      textUnderlineOffset?: string;
+      background?: string;
+      padding?: string;
+      borderRadius?: string;
+    }
+  > = {
     default: {
       color: "var(--foreground)",
       textDecoration: "none",
@@ -28,6 +38,9 @@ export function Link({ element }: ComponentRenderProps) {
     },
   };
 
+  const variantKey = variant || "default";
+  const variantStyles = variantMap[variantKey] || variantMap.default;
+
   return (
     <a
       href={href}
@@ -36,7 +49,7 @@ export function Link({ element }: ComponentRenderProps) {
         alignItems: "center",
         gap: "6px",
         fontWeight: 500,
-        ...variantMap[variant || "default"],
+        ...variantStyles,
       }}
     >
       {text}

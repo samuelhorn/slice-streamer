@@ -36,11 +36,11 @@ export function Icon({ element }: ComponentRenderProps) {
 
   const iconSize = sizeMap[size || "md"];
   const iconColor = colorMap[color || "default"];
-  const IconComponent = (LucideIcons as Record<
+  const IconComponent = (LucideIcons as unknown as Record<
     string,
     ComponentType<{ size?: number; color?: string }>
   >)[name] ??
-    (LucideIcons as Record<
+    (LucideIcons as unknown as Record<
       string,
       ComponentType<{ size?: number; color?: string }>
     >)[normalizedName];
