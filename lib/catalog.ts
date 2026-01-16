@@ -90,16 +90,25 @@ export const sectionCatalog = createCatalog({
       description: "Body text or supporting copy",
     },
 
-    // Interactive
+    // Actions & UI
     Button: {
       props: z.object({
         label: z.string(),
-        variant: z.enum(["primary", "secondary", "outline", "ghost"]).nullable(),
+        variant: z
+          .enum([
+            "default",
+            "secondary",
+            "outline",
+            "ghost",
+            "link",
+            "destructive",
+          ])
+          .nullable(),
         size: z.enum(["sm", "md", "lg"]).nullable(),
         href: z.string().nullable(),
         action: z.string().nullable(),
       }),
-      description: "Call-to-action button or linked button",
+      description: "Shadcn button or linked button",
     },
 
     Link: {
@@ -109,6 +118,127 @@ export const sectionCatalog = createCatalog({
         variant: z.enum(["default", "underline", "button"]).nullable(),
       }),
       description: "Inline link or button-style link",
+    },
+
+    Badge: {
+      props: z.object({
+        text: z.string(),
+        variant: z
+          .enum(["default", "secondary", "outline", "destructive"])
+          .nullable(),
+      }),
+      description: "Shadcn badge for labels and tags",
+    },
+
+    Alert: {
+      props: z.object({
+        title: z.string(),
+        description: z.string(),
+        variant: z.enum(["default", "destructive"]).nullable(),
+      }),
+      description: "Shadcn alert banner with title and description",
+    },
+
+    Input: {
+      props: z.object({
+        placeholder: z.string().nullable(),
+        value: z.string().nullable(),
+        type: z
+          .enum(["text", "email", "password", "search", "tel", "url"])
+          .nullable(),
+        disabled: z.boolean().nullable(),
+      }),
+      description: "Shadcn input field",
+    },
+
+    Textarea: {
+      props: z.object({
+        placeholder: z.string().nullable(),
+        value: z.string().nullable(),
+        rows: z
+          .union([
+            z.literal(2),
+            z.literal(3),
+            z.literal(4),
+            z.literal(5),
+            z.literal(6),
+          ])
+          .nullable(),
+        disabled: z.boolean().nullable(),
+      }),
+      description: "Shadcn textarea field",
+    },
+
+    Select: {
+      props: z.object({
+        placeholder: z.string().nullable(),
+        value: z.string().nullable(),
+        options: z
+          .array(
+            z.object({
+              label: z.string(),
+              value: z.string(),
+            })
+          )
+          .nullable(),
+      }),
+      description: "Shadcn select dropdown",
+    },
+
+    // Structural
+    Card: {
+      props: z.object({
+        title: z.string().nullable(),
+        description: z.string().nullable(),
+        footer: z.string().nullable(),
+        padding: z.enum(["sm", "md", "lg"]).nullable(),
+        shadow: z.enum(["none", "sm", "md", "lg"]).nullable(),
+        border: z.boolean().nullable(),
+      }),
+      hasChildren: true,
+      description: "Shadcn card container for grouped content",
+    },
+
+    Separator: {
+      props: z.object({
+        orientation: z.enum(["horizontal", "vertical"]).nullable(),
+        spacing: z.enum(["sm", "md", "lg"]).nullable(),
+      }),
+      description: "Shadcn separator line",
+    },
+
+    Accordion: {
+      props: z.object({
+        type: z.enum(["single", "multiple"]).nullable(),
+        collapsible: z.boolean().nullable(),
+        items: z
+          .array(
+            z.object({
+              title: z.string(),
+              content: z.string().nullable(),
+              contentKey: z.string().nullable(),
+              value: z.string().nullable(),
+            })
+          )
+          .nullable(),
+      }),
+      description: "Shadcn accordion with text items",
+    },
+
+    Tabs: {
+      props: z.object({
+        items: z
+          .array(
+            z.object({
+              label: z.string(),
+              content: z.string().nullable(),
+              contentKey: z.string().nullable(),
+              value: z.string().nullable(),
+            })
+          )
+          .nullable(),
+      }),
+      description: "Shadcn tabs with text content",
     },
 
     // Media
@@ -132,23 +262,14 @@ export const sectionCatalog = createCatalog({
       description: "Icon from the icon set",
     },
 
-    // Structural
-    Card: {
+    Avatar: {
       props: z.object({
-        padding: z.enum(["sm", "md", "lg"]).nullable(),
-        shadow: z.enum(["none", "sm", "md", "lg"]).nullable(),
-        border: z.boolean().nullable(),
+        src: z.string().nullable(),
+        alt: z.string().nullable(),
+        fallback: z.string().nullable(),
+        size: z.enum(["sm", "md", "lg", "xl"]).nullable(),
       }),
-      hasChildren: true,
-      description: "Card container for grouped content",
-    },
-
-    Divider: {
-      props: z.object({
-        spacing: z.enum(["sm", "md", "lg"]).nullable(),
-        color: z.enum(["light", "default", "dark"]).nullable(),
-      }),
-      description: "Horizontal divider line",
+      description: "Shadcn avatar with image or fallback",
     },
   },
   validation: "strict",

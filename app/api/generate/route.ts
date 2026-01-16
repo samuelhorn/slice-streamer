@@ -17,12 +17,20 @@ COMPONENT DETAILS:
 - Spacer: { size?: "xs"|"sm"|"md"|"lg"|"xl"|"2xl" }
 - Heading: { level: 1-6, text: string, size?: "sm"|"md"|"lg"|"xl"|"2xl"|"3xl", weight?: "normal"|"medium"|"semibold"|"bold", align?: "left"|"center"|"right" }
 - Text: { content: string, size?: "xs"|"sm"|"base"|"lg"|"xl", weight?: "normal"|"medium"|"semibold", color?: "default"|"muted"|"accent", align?: "left"|"center"|"right" }
-- Button: { label: string, variant?: "primary"|"secondary"|"outline"|"ghost", size?: "sm"|"md"|"lg", href?: string, action?: string }
+- Button: { label: string, variant?: "default"|"secondary"|"outline"|"ghost"|"link"|"destructive", size?: "sm"|"md"|"lg", href?: string, action?: string }
 - Link: { text: string, href: string, variant?: "default"|"underline"|"button" }
+- Badge: { text: string, variant?: "default"|"secondary"|"outline"|"destructive" }
+- Alert: { title: string, description: string, variant?: "default"|"destructive" }
+- Input: { placeholder?: string, value?: string, type?: "text"|"email"|"password"|"search"|"tel"|"url", disabled?: boolean }
+- Textarea: { placeholder?: string, value?: string, rows?: 2|3|4|5|6, disabled?: boolean }
+- Select: { placeholder?: string, value?: string, options?: { label: string, value: string }[] }
+- Card: { title?: string, description?: string, footer?: string, padding?: "sm"|"md"|"lg", shadow?: "none"|"sm"|"md"|"lg", border?: boolean }
+- Separator: { orientation?: "horizontal"|"vertical", spacing?: "sm"|"md"|"lg" }
+- Accordion: { type?: "single"|"multiple", collapsible?: boolean, items?: { title: string, content?: string, contentKey?: string, value?: string }[] }
+- Tabs: { items?: { label: string, content?: string, contentKey?: string, value?: string }[] }
 - Image: { src: string, alt: string, width?: "full"|"auto"|"1/2"|"1/3"|"2/3", aspectRatio?: "16/9"|"4/3"|"1/1"|"auto", rounded?: "none"|"sm"|"md"|"lg"|"full" }
 - Icon: { name: string, size?: "sm"|"md"|"lg"|"xl", color?: "default"|"accent"|"muted" }
-- Card: { padding?: "sm"|"md"|"lg", shadow?: "none"|"sm"|"md"|"lg", border?: boolean }
-- Divider: { spacing?: "sm"|"md"|"lg", color?: "light"|"default"|"dark" }
+- Avatar: { src?: string, alt?: string, fallback?: string, size?: "sm"|"md"|"lg"|"xl" }
 
 LAYOUT RULES (HIGHEST PRIORITY):
 1) Stack = vertical only. Row = horizontal only. Columns = grid for 2-4 items.
@@ -30,6 +38,11 @@ LAYOUT RULES (HIGHEST PRIORITY):
 3) Row children are left then right. Stack children are top then bottom.
 4) "image on the right" -> Row ["content", "image"]. "image on the left" -> Row ["image", "content"].
 5) Use Columns with Card children for pricing/features grids (2-4 cards).
+
+NESTED CONTENT RULES:
+1) Accordion/Tabs can render nested elements via contentKey.
+2) If using contentKey, add the referenced element key to the Accordion/Tabs element's children array.
+3) For complex content, make the referenced child a Stack/Row/Columns container and add its own children.
 
 OUTPUT FORMAT:
 Output JSONL where each line is a patch operation.
@@ -61,7 +74,7 @@ EXAMPLE - Image on Right:
 {"op":"add","path":"/elements/content-stack","value":{"key":"content-stack","type":"Stack","props":{"gap":"md","align":"left"},"children":["split-heading","split-text","split-button"]}}
 {"op":"add","path":"/elements/split-heading","value":{"key":"split-heading","type":"Heading","props":{"level":1,"text":"Welcome","size":"3xl","weight":"bold"}}}
 {"op":"add","path":"/elements/split-text","value":{"key":"split-text","type":"Text","props":{"content":"Image is on the right.","size":"lg"}}}
-{"op":"add","path":"/elements/split-button","value":{"key":"split-button","type":"Button","props":{"label":"Learn more","variant":"primary"}}}
+{"op":"add","path":"/elements/split-button","value":{"key":"split-button","type":"Button","props":{"label":"Learn more","variant":"default"}}}
 {"op":"add","path":"/elements/hero-image","value":{"key":"hero-image","type":"Image","props":{"src":"https://placehold.co/600x400","alt":"Hero","width":"1/2"}}}
 
 Generate JSONL patches now:`;
