@@ -9,7 +9,7 @@ import {
   Renderer,
 } from "@json-render/react";
 import { Loader2 } from "lucide-react";
-import { componentRegistry } from "@/components/ui";
+import { componentRegistry } from "@/components/registry";
 
 const INITIAL_DATA = {};
 
@@ -34,6 +34,8 @@ function SectionBuilder() {
     "A pricing section with three horizontal cards and a heading",
     "A three-column feature section for a luxury hotel website with icons and short copy",
     "A split layout with an image and a call to action",
+    "A demo request form with social proof logos",
+    "A section for filtering cars, including selects, tags and buttons",
   ];
 
   const hasElements = tree && Object.keys(tree.elements).length > 0;
@@ -43,8 +45,8 @@ function SectionBuilder() {
       <header style={{ marginBottom: 48 }}>
         <h1 className="text-7xl font-bold">Slice Streamer</h1>
         <p className="text-xl text-muted-foreground max-w-xl mt-4">
-          Generate website sections from prompts. Constrained to a
-          predefinedcatalog of components.
+          Stream website sections based on prompts, all constrained to a
+          predefined catalog of components.
         </p>
       </header>
 

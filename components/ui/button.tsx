@@ -1,72 +1,62 @@
-"use client";
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
 
-import { type ComponentRenderProps } from "@json-render/react";
+import { cn } from "@/lib/utils"
 
-export function Button({ element }: ComponentRenderProps) {
-  const { label, variant, size, href, action } = element.props as {
-    label: string;
-    variant?: string | null;
-    size?: string | null;
-    href?: string | null;
-    action?: string | null;
-  };
-
-  const sizeMap: Record<string, { padding: string; fontSize: string }> = {
-    sm: { padding: "8px 14px", fontSize: "14px" },
-    md: { padding: "12px 18px", fontSize: "16px" },
-    lg: { padding: "14px 22px", fontSize: "18px" },
-  };
-
-  const variantMap: Record<string, { background: string; color: string; border: string }> = {
-    primary: {
-      background: "var(--primary)",
-      color: "var(--primary-foreground)",
-      border: "1px solid var(--primary)",
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9",
+        "icon-sm": "size-8",
+        "icon-lg": "size-10",
+      },
     },
-    secondary: {
-      background: "var(--secondary)",
-      color: "var(--secondary-foreground)",
-      border: "1px solid var(--secondary)",
+    defaultVariants: {
+      variant: "default",
+      size: "default",
     },
-    outline: {
-      background: "transparent",
-      color: "var(--foreground)",
-      border: "1px solid var(--border)",
-    },
-    ghost: {
-      background: "transparent",
-      color: "var(--foreground)",
-      border: "1px solid transparent",
-    },
-  };
-
-  const sizeStyle = sizeMap[size || "md"];
-  const variantStyle = variantMap[variant || "primary"];
-
-  const sharedStyle = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "6px",
-    borderRadius: "var(--radius)",
-    textDecoration: "none",
-    fontWeight: 500,
-    cursor: "pointer",
-    ...sizeStyle,
-    ...variantStyle,
-  };
-
-  if (href) {
-    return (
-      <a href={href} style={sharedStyle} data-action={action || undefined}>
-        {label}
-      </a>
-    );
   }
+)
+
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+  }) {
+  const Comp = asChild ? Slot : "button"
 
   return (
-    <button type="button" style={sharedStyle} data-action={action || undefined}>
-      {label}
-    </button>
-  );
+    <Comp
+      data-slot="button"
+      data-variant={variant}
+      data-size={size}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
 }
+
+export { Button, buttonVariants }
