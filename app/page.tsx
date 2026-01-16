@@ -1,65 +1,170 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useCallback } from "react";
+import {
+  DataProvider,
+  ActionProvider,
+  VisibilityProvider,
+  useUIStream,
+  Renderer,
+} from "@json-render/react";
+import { Loader2 } from "lucide-react";
+import { componentRegistry } from "@/components/ui";
+
+const INITIAL_DATA = {};
+
+function SectionBuilder() {
+  const [prompt, setPrompt] = useState("");
+  const { tree, isStreaming, error, send, clear } = useUIStream({
+    api: "/api/generate",
+    onError: (err) => console.error("Generation error:", err),
+  });
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!prompt.trim()) return;
+      await send(prompt, { data: INITIAL_DATA });
+    },
+    [prompt, send]
+  );
+
+  const examples = [
+    "A hero section with a headline, subtext, and two buttons and image on the right side",
+    "A pricing section with three horizontal cards and a heading",
+    "A three-column feature section for a luxury hotel website with icons and short copy",
+    "A split layout with an image and a call to action",
+  ];
+
+  const hasElements = tree && Object.keys(tree.elements).length > 0;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div style={{ maxWidth: 960, margin: "0 auto", padding: "48px 24px" }}>
+      <header style={{ marginBottom: 48 }}>
+        <h1 className="text-7xl font-bold">Slice Streamer</h1>
+        <p className="text-xl text-muted-foreground max-w-xl mt-4">
+          Generate website sections from prompts. Constrained to a
+          predefinedcatalog of components.
+        </p>
+      </header>
+
+      <form onSubmit={handleSubmit} style={{ marginBottom: 32 }}>
+        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+          <div
+            style={{
+              flex: 1,
+              position: "relative",
+              padding: "2px",
+              borderRadius: "var(--radius)",
+              background: "linear-gradient(90deg, #D7E7FF, #8b5cf6, #E6F0FF)",
+              backgroundSize: "200% 100%",
+              animation: isStreaming
+                ? "gradient-border 1.5s linear infinite"
+                : "none",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <input
+              type="text"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Describe the website section you want..."
+              disabled={isStreaming}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                background: isStreaming
+                  ? "linear-gradient(90deg, rgba(215, 231, 255, 0.15), rgba(139, 92, 246, 0.1), rgba(230, 240, 255, 0.15))"
+                  : "var(--card)",
+                backgroundSize: isStreaming ? "200% 100%" : "100% 100%",
+                animation: isStreaming
+                  ? "gradient-border 1.5s linear infinite"
+                  : "none",
+                border: "none",
+                borderRadius: "calc(var(--radius) - 2px)",
+                color: "var(--foreground)",
+                fontSize: 16,
+                outline: "none",
+              }}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+          <button
+            type="submit"
+            disabled={isStreaming || !prompt.trim()}
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
           >
-            Documentation
-          </a>
+            {isStreaming ? "Generating..." : "Generate"}
+          </button>
+          {hasElements && (
+            <button
+              type="button"
+              onClick={clear}
+              className="bg-transparent text-muted-foreground px-4 py-2 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-semibold border-2 border-border"
+            >
+              Clear
+            </button>
+          )}
         </div>
-      </main>
+
+        <div className="flex gap-2 flex-wrap">
+          {examples.map((ex) => (
+            <button
+              key={ex}
+              type="button"
+              onClick={() => setPrompt(ex)}
+              className="px-2 py-1 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-semibold border-2 border-border text-xs bg-muted text-muted-foreground hover:bg-muted-foreground hover:text-muted transition-colors duration-75"
+            >
+              {ex}
+            </button>
+          ))}
+        </div>
+      </form>
+
+      {error && (
+        <div className="text-red-500 text-sm mt-2">{error.message}</div>
+      )}
+
+      <div className="p-4 mb-4 bg-card border-2 border-border rounded-md text-sm mt-2">
+        {!hasElements && !isStreaming ? (
+          <div className="text-center p-6 text-xl text-muted-foreground">
+            <p style={{ margin: 0 }}>
+              Enter a prompt to generate a website section
+            </p>
+          </div>
+        ) : isStreaming && !hasElements ? (
+          <div className="text-center p-6">
+            <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
+          </div>
+        ) : tree ? (
+          <Renderer
+            tree={tree}
+            registry={componentRegistry}
+            loading={isStreaming}
+          />
+        ) : null}
+      </div>
+
+      {hasElements && (
+        <details style={{ marginTop: 24 }}>
+          <summary className="cursor-pointer font-semibold text-sm text-muted-foreground">
+            View JSON
+          </summary>
+          <pre className="mt-2 p-4 bg-card border-2 border-border rounded-md overflow-auto text-sm text-muted-foreground">
+            {JSON.stringify(tree, null, 2)}
+          </pre>
+        </details>
+      )}
     </div>
+  );
+}
+
+export default function SectionBuilderPage() {
+  return (
+    <DataProvider initialData={INITIAL_DATA}>
+      <VisibilityProvider>
+        <ActionProvider>
+          <SectionBuilder />
+        </ActionProvider>
+      </VisibilityProvider>
+    </DataProvider>
   );
 }
