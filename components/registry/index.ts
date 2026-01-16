@@ -18,6 +18,9 @@ export { Separator } from "./separator";
 export { Input } from "./input";
 export { Textarea } from "./textarea";
 export { Select } from "./select";
+export { Checkbox } from "./checkbox";
+export { Breadcrumb } from "./breadcrumb";
+export { Carousel } from "./carousel";
 export { Accordion } from "./accordion";
 export { Tabs } from "./tabs";
 
@@ -40,6 +43,9 @@ import { Separator } from "./separator";
 import { Input } from "./input";
 import { Textarea } from "./textarea";
 import { Select } from "./select";
+import { Checkbox } from "./checkbox";
+import { Breadcrumb } from "./breadcrumb";
+import { Carousel } from "./carousel";
 import { Accordion } from "./accordion";
 import { Tabs } from "./tabs";
 
@@ -63,6 +69,9 @@ export const componentRegistry = {
   Input,
   Textarea,
   Select,
+  Checkbox,
+  Breadcrumb,
+  Carousel,
   Accordion,
   Tabs,
 };
